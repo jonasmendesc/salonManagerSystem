@@ -1,0 +1,43 @@
+<div class="login-box"  >
+  <div class="login-logo">
+    <a><b>Salon</b>System</a>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Entre com seu email e senha</p>
+
+    <form [formGroup]="loginForm" novalidate>
+
+     <ssm-input errorMessage="Email invalido">
+        <input type="email" class="form-control" formControlName="email" placeholder="E-mail">
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </ssm-input>
+
+      <ssm-input errorMessage="Senha deve ter entre 5 a 10 caracteres">
+        <input type="password" class="form-control" formControlName="password" placeholder="Digitar senha">
+         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+      </ssm-input>
+
+      <div class="row">
+        <div class="col-xs-8">
+        </div>
+        <!-- /.col -->
+        <div class="col-xs-4">
+          <button [disabled]="!loginForm.valid" type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
+        </div>
+        <!-- /.col -->
+      </div>
+    </form>
+
+    <div class="social-auth-links text-center">
+      <p>- OU -</p>
+      <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i>Entrar com Facebook</a>
+      <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i>Entrar com o Google+</a>
+    </div>
+    <!-- /.social-auth-links -->
+    <a href="#">Esqueci minha senha</a><br>
+    <a [routerLink]="['/register']" class="text-center">Criar uma nova conta</a>
+
+  </div>
+  <!-- /.login-box-body -->
+</div>

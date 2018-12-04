@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { OauthApplicationService } from './core/oauth-application.service';
 
 @Component({
   selector: 'ssm-root',
@@ -10,9 +11,11 @@ import gql from 'graphql-tag';
 export class AppComponent {
   title = 'Sistema de salão';
 
-  constructor(private apollo: Apollo) { this.createClientId(); }
+  constructor(private apollo: Apollo, private oauthApplicationService: OauthApplicationService) {
+    // this.oauthApplicationService.findAndRefreshToken();
+  }
 
-  createClientId() {
+ /* createClientId() {
 
    this.apollo.use('application').mutate({
      mutation: gql`mutation {
@@ -23,7 +26,7 @@ export class AppComponent {
       }
     }`
    }).subscribe((response) => console.log('response', response));
-  }
+  } */
 }
 
 

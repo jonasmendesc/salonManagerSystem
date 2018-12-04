@@ -33,7 +33,7 @@
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <button type="submit" [disabled]="!registerForm.valid" class="btn btn-primary btn-block btn-flat">Registrar</button>
+          <button type="submit" (click)="clickEventHandler()"  [disabled]="!registerForm.valid" class="btn btn-primary btn-block btn-flat">Registrar</button>
         </div>
         <!-- /.col -->
       </div>

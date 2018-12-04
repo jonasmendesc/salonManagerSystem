@@ -1,3 +1,4 @@
+import { TokenApplication } from './../core/types';
 import { NgModule } from '@angular/core';
 import { HttpLinkModule, HttpLink  } from 'apollo-angular-link-http';
 import { Apollo, ApolloModule } from 'apollo-angular';
@@ -5,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { environment } from 'src/environments/environment';
 import { onError } from 'apollo-link-error';
-import { ApolloLink } from 'apollo-link';
+import { ApolloLink, Operation } from 'apollo-link';
 
 @NgModule({
   declarations: [],
@@ -39,23 +40,45 @@ export class ApolloConfigModule {
       }
     });
 
+    const oauthApplicationMiddleware: ApolloLink = new ApolloLink((operation: Operation, forward) => {
+      operation.setContext({
+        headers: {
+          'clientId': environment.clientId
+        }
+      });
+      return forward(operation);
+    });
+
+    const applicationMiddleware: ApolloLink = new ApolloLink((operation: Operation, forward) => {
+      const accessToken: string = localStorage.getItem(environment.accessKeyTokenApplication);
+      if (accessToken) {
+        const tokenApplication: TokenApplication = JSON.parse(accessToken);
+        operation.setContext({
+          headers: {
+            'Authorization': `Bearer ${tokenApplication.data.createToken.token}`
+          }
+        });
+      }
+      return forward(operation);
+    });
+
     apollo.createDefault(
       { link: ApolloLink.from(
         [ linkError,
           httpLink.create({ uri: environment.BusinessManagerUrl })
-        ]), cache : new InMemoryCache(), connectToDevTools: !environment.production});
+        ]), cache : new InMemoryCache({ addTypename : false }), connectToDevTools: !environment.production});
 
     apollo.createNamed('application',
       { link: ApolloLink.from(
         [ linkError,
-          httpLink.create({ uri: environment.applicationUrl })
-        ]), cache : new InMemoryCache(), connectToDevTools: !environment.production});
+          applicationMiddleware.concat(httpLink.create({ uri: environment.applicationUrl }))
+        ]), cache : new InMemoryCache({ addTypename : false }), connectToDevTools: !environment.production});
 
     apollo.createNamed('oauth',
     { link: ApolloLink.from(
       [ linkError,
-        httpLink.create({ uri: environment.oAuthUrl })
-      ]), cache : new InMemoryCache(), connectToDevTools: !environment.production});
+        oauthApplicationMiddleware.concat(httpLink.create({ uri: environment.oAuthUrl }))
+      ]), cache : new InMemoryCache({ addTypename: false }), connectToDevTools: !environment.production});
   }
 
 }

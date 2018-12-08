@@ -7,6 +7,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { environment } from 'src/environments/environment';
 import { onError } from 'apollo-link-error';
 import { ApolloLink, Operation } from 'apollo-link';
+import * as crypto from 'crypto-js';
 
 @NgModule({
   declarations: [],
@@ -52,7 +53,8 @@ export class ApolloConfigModule {
     const applicationMiddleware: ApolloLink = new ApolloLink((operation: Operation, forward) => {
       const accessToken: string = localStorage.getItem(environment.accessKeyTokenApplication);
       if (accessToken) {
-        const tokenApplication: TokenApplication = JSON.parse(accessToken);
+         const bytes = crypto.AES.decrypt(accessToken, environment.accessKeyCrypto);
+        const tokenApplication: TokenApplication = JSON.parse(bytes.toString(crypto.enc.Utf8));
         operation.setContext({
           headers: {
             'Authorization': `Bearer ${tokenApplication.data.createToken.token}`

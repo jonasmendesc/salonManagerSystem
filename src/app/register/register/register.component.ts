@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
-import { GenericRequestService } from 'src/app/core/generic-request.service';
-import { OauthApplicationService } from 'src/app/core/oauth-application.service';
-import { TokenApplication } from 'src/app/core/types';
+import { RegisterService } from 'src/app/core/register.service';
 
 @Component({
   selector: 'ssm-register',
@@ -11,8 +9,7 @@ import { TokenApplication } from 'src/app/core/types';
 export class RegisterComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
-              private genericRequestService: GenericRequestService,
-              private oauthAppilicationService: OauthApplicationService) { }
+              private registerService: RegisterService) { }
 
   registerForm: FormGroup;
   emailPattern = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -40,6 +37,7 @@ export class RegisterComponent implements OnInit {
     email: this.formBuilder.control('', [Validators.required, Validators.pattern(this.emailPattern)]),
     password: this.formBuilder.control('', [Validators.required, Validators.minLength(5), Validators.maxLength(12)]),
     passwordConfirmation : this.formBuilder.control('', [Validators.required, Validators.minLength(5), Validators.maxLength(12)])
+
   });
 
   }
@@ -47,56 +45,15 @@ export class RegisterComponent implements OnInit {
    * Evento do click do botão para criar a empresa
    */
   clickEventHandler() {
-   const dateCurrent = new Date();
-   if (this.oauthAppilicationService.expiredToken(dateCurrent)) {
-      const mutationToken = `mutation {
-        createToken{ token,expiresIn }
-      }`;
-      this.genericRequestService.mutation('oauth', mutationToken).subscribe(response => {
-        const token: TokenApplication = response;
-        this.oauthAppilicationService.insertOrUpdateToken(token, dateCurrent);
-        this.createCompany();
-      }, error => console.log(error));
-   } else {
-        this.createCompany();
-     }
-   }
-   /**
-    * Cria a empresa
-    */
-   private createCompany(): void {
-    const companyName: string = this.registerForm.get('companyName').value;
-    const email: string = this.registerForm.get('email').value;
-    const password: string = this.registerForm.get('password').value;
 
-    const mutation = `
-       mutation createCompany($name: String!, $email: String!, $password: String!){
-         createCompany(input: { name: $name,  password: $password},
-           emails : [{ email: $email, isMain: true} ]){
-           id
-           name
-           validateEmailCode
-           licenseCode
-           isActive
-           createdAt
-           companyEmails {
-             id
-             email
-             isMain
-             isActive
-             isValidade
-             createdAt
-           }
-         }
-   }`;
+    this.registerService.register(
+      {
+        companyName: this.registerForm.get('companyName').value,
+        password: this.registerForm.get('password').value,
+        email: this.registerForm.get('email').value
+      }
+    );
 
-    const variables = {
-       name: companyName,
-       email: email,
-       password: password
-    };
-    this.genericRequestService.mutationWithVariable('application', mutation, variables)
-        .subscribe(responseApplication => console.log(responseApplication), error => console.log(error));
    }
 
 }

@@ -23,7 +23,7 @@
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <button [disabled]="!loginForm.valid" type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
+          <button [disabled]="!loginForm.valid" (click)="clickEventHandler()"  type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
         </div>
         <!-- /.col -->
       </div>

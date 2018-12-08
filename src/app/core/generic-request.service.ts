@@ -12,6 +12,10 @@ import { Observable } from 'rxjs';
  */
 export class GenericRequestService {
 
+  /**
+   * Construtor para a inicialização da instância
+   * @param apollo Client para fazer as requisições
+   */
   constructor(private apollo: Apollo) { }
 
   /**

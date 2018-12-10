@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { RegisterService } from 'src/app/core/register.service';
+import { AuthService, FacebookLoginProvider } from 'angularx-social-login';
 
 @Component({
   selector: 'ssm-register',
@@ -9,7 +10,8 @@ import { RegisterService } from 'src/app/core/register.service';
 export class RegisterComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
-              private registerService: RegisterService) { }
+              private registerService: RegisterService,
+              private authService: AuthService) { }
 
   registerForm: FormGroup;
   emailPattern = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -55,5 +57,9 @@ export class RegisterComponent implements OnInit {
     );
 
    }
+
+   signInWithFB(): void {
+    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID);
+  }
 
 }

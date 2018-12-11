@@ -35,12 +35,11 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.signOut();
     this.authService.authState.subscribe((user: SocialUser) => {
       this.user = user;
       this.loggedIn = (user != null);
     });
-    if (!this.loggedIn) {
+    if (this.loggedIn) {
       this.authService.signOut();
     }
     this.registerForm = this.formBuilder.group({

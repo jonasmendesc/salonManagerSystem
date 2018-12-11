@@ -75,9 +75,11 @@ export class RegisterComponent implements OnInit {
      }
   }
   signInWithGoogle(): void {
-    console.log('Chamei aqui');
+    if (!this.loggedIn) {
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
-
+    } else {
+      console.log('Usuário já está logado');
+    }
   }
 
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { RegisterService } from 'src/app/core/register.service';
-import { AuthService, FacebookLoginProvider, SocialUser } from 'angularx-social-login';
+import { AuthService, FacebookLoginProvider, SocialUser, GoogleLoginProvider } from 'angularx-social-login';
 
 @Component({
   selector: 'ssm-register',
@@ -40,6 +40,9 @@ export class RegisterComponent implements OnInit {
       this.user = user;
       this.loggedIn = (user != null);
     });
+    if (!this.loggedIn) {
+      this.authService.signOut();
+    }
     this.registerForm = this.formBuilder.group({
     companyName: this.formBuilder.control('', [Validators.required, Validators.minLength(5)]),
     email: this.formBuilder.control('', [Validators.required, Validators.pattern(this.emailPattern)]),
@@ -70,6 +73,11 @@ export class RegisterComponent implements OnInit {
      } else {
        console.log('Usuario já está logado');
      }
+  }
+  signInWithGoogle(): void {
+    console.log('Chamei aqui');
+    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
+
   }
 
 }

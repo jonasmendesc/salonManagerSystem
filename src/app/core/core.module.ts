@@ -25,6 +25,10 @@ import { SocialLoginModule, AuthServiceConfig, FacebookLoginProvider, GoogleLogi
           {
             id: FacebookLoginProvider.PROVIDER_ID,
             provider: new FacebookLoginProvider('215665592686119')
+          },
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider('309731255094-io25lhqjqck4svqkoqhv1fqdlvk1rdgq.apps.googleusercontent.com')
           }
         ])
       }

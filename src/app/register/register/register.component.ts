@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { RegisterService } from 'src/app/core/register.service';
-import { AuthService, FacebookLoginProvider } from 'angularx-social-login';
+import { AuthService, FacebookLoginProvider, SocialUser } from 'angularx-social-login';
 
 @Component({
   selector: 'ssm-register',
@@ -15,6 +15,8 @@ export class RegisterComponent implements OnInit {
 
   registerForm: FormGroup;
   emailPattern = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+  private user: SocialUser;
+  private loggedIn: boolean;
 
   /**
    * Verifica se o email e confirmação do email são iguais
@@ -34,6 +36,10 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
 
+    this.authService.authState.subscribe((user: SocialUser) => {
+      this.user = user;
+      this.loggedIn = (user != null);
+    });
     this.registerForm = this.formBuilder.group({
     companyName: this.formBuilder.control('', [Validators.required, Validators.minLength(5)]),
     email: this.formBuilder.control('', [Validators.required, Validators.pattern(this.emailPattern)]),
@@ -59,7 +65,11 @@ export class RegisterComponent implements OnInit {
    }
 
    signInWithFB(): void {
-    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID);
+     if (!this.loggedIn) {
+      this.authService.signIn(FacebookLoginProvider.PROVIDER_ID);
+     } else {
+       console.log('Usuario já está logado');
+     }
   }
 
 }
